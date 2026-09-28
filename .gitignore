@@ -1,0 +1,4 @@
+# Documents de séance privés (lien symbolique local)
+source/
+# Vers de Queneau en clair : seule la version chiffrée est publiée
+data/queneau.json

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oulipo en classe</title>
+<meta name="description" content="Outils projetables pour la séquence Oulipo : Cent mille milliards de poèmes, compteur de lettres, chiffre de César.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316213e'/><text x='16' y='23' font-family='Georgia' font-size='20' fill='%23fff' text-anchor='middle'>O</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script>
+  try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch {}
+</script>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="#sonnets">Oulipo</a>
+  <nav class="tabs" aria-label="Outils">
+    <a href="#sonnets" data-tab="sonnets">Cent mille milliards</a>
+    <a href="#lettres" data-tab="lettres">Lettres</a>
+    <a href="#cesar" data-tab="cesar">César</a>
+  </nav>
+  <div class="bar-actions">
+    <button type="button" class="icon-btn" id="theme-btn" title="Changer de thème (clair / sombre)" aria-label="Changer de thème">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="fs-btn" title="Plein écran (F)" aria-label="Plein écran">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ Cent mille milliards de poèmes ============ -->
+  <section class="view" id="view-sonnets" data-view="sonnets" hidden>
+    <form class="lock" id="lock" hidden>
+      <h1>Cent mille milliards de poèmes</h1>
+      <p>Les vers de Queneau sont protégés par le droit d'auteur. Saisis le mot de passe de la séquence pour les afficher.</p>
+      <label class="sr-only" for="lock-pass">Mot de passe</label>
+      <input id="lock-pass" type="password" autocomplete="current-password" placeholder="Mot de passe" required>
+      <label class="check"><input type="checkbox" id="lock-remember" checked> Se souvenir sur cet appareil</label>
+      <button type="submit" class="btn primary">Ouvrir le livre</button>
+      <p class="lock-error" id="lock-error" role="alert"></p>
+    </form>
+
+    <div class="sonnets" id="sonnets" hidden>
+      <div class="poem" id="poem" aria-label="Sonnet"></div>
+      <aside class="alts" aria-live="polite">
+        <h2 id="alts-title">Vers 1</h2>
+        <p class="alts-hint" id="alts-hint"></p>
+        <ol class="alts-list" id="alts-list"></ol>
+        <p class="progress" id="progress" hidden></p>
+      </aside>
+      <footer class="combo">
+        <div class="code" id="code" aria-label="Numéro du poème"></div>
+        <div class="combo-actions">
+          <button type="button" class="btn primary" id="rand-btn" title="Raccourci : Espace">Au hasard</button>
+          <label class="select">
+            <span>Sonnet d'origine</span>
+            <select id="orig-select">
+              <option value="">—</option>
+            </select>
+          </label>
+          <button type="button" class="btn" id="read-btn" aria-pressed="false" title="Révéler les vers un à un (Espace ou →)">Vers par vers</button>
+        </div>
+        <p class="count" id="count"></p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============ Lettres ============ -->
+  <section class="view" id="view-lettres" data-view="lettres" hidden>
+    <div class="lettres">
+      <div class="panel input-panel">
+        <label for="l-text" class="panel-title">Texte à analyser</label>
+        <textarea id="l-text" spellcheck="false" placeholder="Colle ou tape un texte ici…"></textarea>
+        <label class="check"><input type="checkbox" id="l-fold" checked> Accents regroupés (é → e)</label>
+        <div class="row">
+          <span class="panel-title">Exemples</span>
+          <button type="button" class="btn small" data-sample="bellay">Du Bellay</button>
+          <button type="button" class="btn small" data-sample="lipo">Texte mystère</button>
+          <span class="spacer"></span>
+          <button type="button" class="btn small" id="l-clear">Effacer</button>
+        </div>
+      </div>
+      <div class="panel result-panel">
+        <dl class="stats">
+          <div><dt>caractères</dt><dd id="s-chars">0</dd></div>
+          <div><dt>lettres</dt><dd id="s-letters">0</dd></div>
+          <div><dt>lettres différentes</dt><dd id="s-distinct">0</dd></div>
+        </dl>
+        <div class="row">
+          <div class="seg" role="group" aria-label="Unité">
+            <button type="button" data-mode="count" aria-pressed="true">Effectifs</button>
+            <button type="button" data-mode="freq" aria-pressed="false">Fréquences</button>
+          </div>
+          <label class="check"><input type="checkbox" id="l-ref"> Comparer au français moyen</label>
+          <span class="spacer"></span>
+          <p class="legend" id="l-legend" hidden>
+            <span class="key key-text"></span>ce texte
+            <span class="key key-ref"></span>français moyen
+          </p>
+        </div>
+        <div class="chart" id="l-chart"></div>
+        <div class="absent">
+          <span class="absent-label">Lettres absentes</span>
+          <span class="absent-list" id="l-absent"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ César ============ -->
+  <section class="view" id="view-cesar" data-view="cesar" hidden>
+    <div class="cesar">
+      <div class="cesar-top">
+        <div class="seg" role="group" aria-label="Sens">
+          <button type="button" data-dir="-1" aria-pressed="true">Déchiffrer</button>
+          <button type="button" data-dir="1" aria-pressed="false">Chiffrer</button>
+        </div>
+        <div class="shift">
+          <span class="shift-label">Décalage</span>
+          <button type="button" class="btn round" id="c-minus" aria-label="Diminuer le décalage">−</button>
+          <output id="c-shift-out" class="shift-value">0</output>
+          <button type="button" class="btn round" id="c-plus" aria-label="Augmenter le décalage">+</button>
+          <input type="range" id="c-shift" min="0" max="25" value="0" aria-label="Décalage">
+        </div>
+        <div class="cesar-tools">
+          <button type="button" class="btn small" id="c-guess" title="Suppose que la lettre la plus fréquente du message est un E">Deviner avec la lettre E</button>
+          <button type="button" class="btn small" id="c-all">Essayer les 26 décalages</button>
+        </div>
+      </div>
+
+      <div class="wheel" id="c-wheel" aria-hidden="true"></div>
+
+      <div class="cesar-io">
+        <div class="panel">
+          <label for="c-in" class="panel-title" id="c-in-label">Message chiffré</label>
+          <textarea id="c-in" spellcheck="false"></textarea>
+        </div>
+        <div class="panel">
+          <span class="panel-title" id="c-out-label">Message déchiffré</span>
+          <output class="c-out" id="c-out" for="c-in c-shift"></output>
+        </div>
+      </div>
+
+      <div class="brute" id="c-brute" hidden>
+        <div class="brute-head">
+          <h2>Les 26 décalages possibles</h2>
+          <button type="button" class="btn small" id="c-brute-close">Fermer</button>
+        </div>
+        <ol class="brute-list" id="c-brute-list"></ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="tip" id="tip" hidden></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
