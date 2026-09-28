@@ -1,9 +1,8 @@
 // Cent mille milliards de poèmes : un poème = un numéro à 14 chiffres,
 // le chiffre n°i donne la variante (0–9) du vers n°i.
-import { decryptJson } from "./crypto.js";
+import { decryptJson, savedPass as store } from "./crypto.js";
 
 const DATA_URL = "data/queneau.enc.json";
-const PASS_KEY = "oulipo-pass";
 const RHYMES = "ABABABABCCDEED"; // schéma réel du livre
 const STANZAS = [[0, 4], [4, 8], [8, 11], [11, 14]];
 const $ = (id) => document.getElementById(id);
@@ -14,12 +13,6 @@ let digits = [];          // variante choisie pour chaque vers
 let active = 0;           // vers sélectionné
 let reading = -1;         // mode vers par vers : nombre de vers révélés (-1 = inactif)
 let pendingCode = null;   // numéro reçu dans l'URL avant déverrouillage
-
-const store = {
-  get: () => { try { return localStorage.getItem(PASS_KEY); } catch { return null; } },
-  set: (v) => { try { localStorage.setItem(PASS_KEY, v); } catch {} },
-  del: () => { try { localStorage.removeItem(PASS_KEY); } catch {} },
-};
 
 export function init() {
   $("lock").addEventListener("submit", async (e) => {

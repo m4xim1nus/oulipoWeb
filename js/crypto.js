@@ -11,3 +11,29 @@ export async function decryptJson(url, password) {
   const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, key, unb64(box.data));
   return JSON.parse(new TextDecoder().decode(plain));
 }
+
+// Mot de passe de la séquence, mémorisé sur l'appareil (partagé par tous les onglets)
+const PASS_KEY = "oulipo-pass";
+export const savedPass = {
+  get: () => { try { return localStorage.getItem(PASS_KEY); } catch { return null; } },
+  set: (v) => { try { localStorage.setItem(PASS_KEY, v); } catch {} },
+  del: () => { try { localStorage.removeItem(PASS_KEY); } catch {} },
+};
+
+// Déchiffre avec le mot de passe mémorisé, sinon le demande (et le mémorise s'il est bon)
+export async function decryptWithPrompt(url) {
+  const saved = savedPass.get();
+  if (saved) {
+    try { return await decryptJson(url, saved); } catch { savedPass.del(); }
+  }
+  const pass = prompt("Mot de passe de la séquence :");
+  if (!pass) return null;
+  try {
+    const data = await decryptJson(url, pass);
+    savedPass.set(pass);
+    return data;
+  } catch {
+    alert("Mot de passe incorrect.");
+    return null;
+  }
+}

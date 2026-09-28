@@ -1,4 +1,5 @@
 # Documents de séance privés (lien symbolique local)
 source/
-# Vers de Queneau en clair : seule la version chiffrée est publiée
-data/queneau.json
+# Textes sous droits en clair : seules les versions chiffrées (*.enc.json) sont publiées
+data/*.json
+!data/*.enc.json

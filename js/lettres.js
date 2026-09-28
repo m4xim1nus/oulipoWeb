@@ -1,3 +1,5 @@
+import { decryptWithPrompt } from "./crypto.js";
+
 // Compteur de lettres : effectifs, fréquences, comparaison au français, lettres absentes.
 const $ = (id) => document.getElementById(id);
 const ALPHA = "abcdefghijklmnopqrstuvwxyz";
@@ -44,6 +46,11 @@ export function init() {
   $("l-clear").addEventListener("click", () => { $("l-text").value = ""; update(); $("l-text").focus(); });
   document.querySelectorAll("[data-sample]").forEach((b) =>
     b.addEventListener("click", () => { $("l-text").value = SAMPLES[b.dataset.sample]; update(); }));
+  // Incipit de La Disparition : sous droits, publié chiffré
+  $("l-perec").addEventListener("click", async () => {
+    const data = await decryptWithPrompt("data/disparition.enc.json");
+    if (data) { $("l-text").value = data.texte; update(); }
+  });
   document.querySelectorAll("#view-lettres [data-mode]").forEach((b) =>
     b.addEventListener("click", () => {
       mode = b.dataset.mode;
