@@ -24,6 +24,32 @@
     <a href="#cesar" data-tab="cesar">César</a>
   </nav>
   <div class="bar-actions">
+    <details class="show-menu" id="show-menu">
+      <summary class="icon-btn wide" title="Choisir ce qui est affiché">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Afficher</span>
+      </summary>
+      <div class="show-pop">
+        <fieldset data-for="sonnets">
+          <legend>Dévoiler pas à pas</legend>
+          <label class="check"><input type="checkbox" data-show="rimes" checked> Schéma des rimes</label>
+          <label class="check"><input type="checkbox" data-show="alts" checked> Les possibilités de chaque vers</label>
+          <label class="check"><input type="checkbox" data-show="nums" checked> Numérotation</label>
+          <label class="check"><input type="checkbox" data-show="total" checked> Nombre total de poèmes</label>
+        </fieldset>
+        <fieldset data-for="lettres">
+          <legend>Dévoiler pas à pas</legend>
+          <label class="check"><input type="checkbox" data-show="stats" checked> Compteurs</label>
+          <label class="check"><input type="checkbox" data-show="chart" checked> Graphique</label>
+          <label class="check"><input type="checkbox" data-show="absent" checked> Lettres absentes</label>
+        </fieldset>
+        <fieldset data-for="cesar">
+          <legend>Dévoiler pas à pas</legend>
+          <label class="check"><input type="checkbox" data-show="wheel" checked> Alphabets alignés</label>
+          <label class="check"><input type="checkbox" data-show="result" checked> Résultat</label>
+        </fieldset>
+      </div>
+    </details>
     <button type="button" class="icon-btn" id="theme-btn" title="Changer de thème (clair / sombre)" aria-label="Changer de thème">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
     </button>
@@ -64,7 +90,7 @@
               <option value="">—</option>
             </select>
           </label>
-          <button type="button" class="btn" id="read-btn" aria-pressed="false" title="Révéler les vers un à un (Espace ou →)">Vers par vers</button>
+          <button type="button" class="btn" id="read-btn" aria-pressed="false" title="Choisir chaque vers parmi ses variantes, l'un après l'autre">Composer vers par vers</button>
         </div>
         <p class="count" id="count"></p>
       </footer>
@@ -93,7 +119,7 @@
           <div><dt>lettres</dt><dd id="s-letters">0</dd></div>
           <div><dt>lettres différentes</dt><dd id="s-distinct">0</dd></div>
         </dl>
-        <div class="row">
+        <div class="row chart-row">
           <div class="seg" role="group" aria-label="Unité">
             <button type="button" data-mode="count" aria-pressed="true">Effectifs</button>
             <button type="button" data-mode="freq" aria-pressed="false">Fréquences</button>
@@ -130,7 +156,7 @@
           <input type="range" id="c-shift" min="0" max="25" value="0" aria-label="Décalage">
         </div>
         <div class="cesar-tools">
-          <button type="button" class="btn small" id="c-guess" title="Suppose que la lettre la plus fréquente du message est un E">Deviner avec la lettre E</button>
+          <button type="button" class="btn small" id="c-freq-btn" aria-pressed="false">Fréquences des lettres</button>
           <button type="button" class="btn small" id="c-all">Essayer les 26 décalages</button>
         </div>
       </div>
@@ -138,9 +164,25 @@
       <div class="wheel" id="c-wheel" aria-hidden="true"></div>
 
       <div class="cesar-io">
-        <div class="panel">
+        <div class="panel" id="c-in-panel">
           <label for="c-in" class="panel-title" id="c-in-label">Message chiffré</label>
           <textarea id="c-in" spellcheck="false"></textarea>
+        </div>
+        <div class="panel freq" id="c-freq" hidden>
+          <span class="panel-title">Message chiffré</span>
+          <div class="chart" id="c-chart-in"></div>
+          <div class="row">
+            <span class="panel-title" id="c-chart-out-title">Message déchiffré</span>
+            <span class="spacer"></span>
+            <p class="legend">
+              <span class="key key-text"></span>ce message
+              <span class="key key-ref"></span>français moyen
+            </p>
+          </div>
+          <div class="chart" id="c-chart-out"></div>
+          <div class="row">
+            <button type="button" class="btn small" id="c-guess" hidden></button>
+          </div>
         </div>
         <div class="panel">
           <span class="panel-title" id="c-out-label">Message déchiffré</span>

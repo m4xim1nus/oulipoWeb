@@ -1,9 +1,14 @@
 // Chiffre de César : chaque lettre est décalée de k rangs dans l'alphabet.
+import { barChart, fmt } from "./chart.js";
+import { FR } from "./lettres.js";
+import { shown, onShow } from "./show.js";
+
 const $ = (id) => document.getElementById(id);
 const A = "abcdefghijklmnopqrstuvwxyz";
 
 let dir = -1;   // -1 : déchiffrer, +1 : chiffrer
 let k = 0;
+let freq = false; // panneau des fréquences à la place du message chiffré
 
 // Décale les lettres ; les accents sont retirés (une lettre accentuée devient sa lettre de base),
 // la casse est conservée, le reste (espaces, ponctuation, chiffres) ne bouge pas.
@@ -27,9 +32,14 @@ export function init() {
   $("c-plus").addEventListener("click", () => setShift(k + 1));
   document.querySelectorAll("#view-cesar [data-dir]").forEach((b) =>
     b.addEventListener("click", () => setDir(Number(b.dataset.dir))));
+  $("c-freq-btn").addEventListener("click", () => setFreq(!freq));
   $("c-guess").addEventListener("click", guess);
   $("c-all").addEventListener("click", openBrute);
   $("c-brute-close").addEventListener("click", closeBrute);
+  const ro = new ResizeObserver(() => drawFreq());
+  ro.observe($("c-chart-in"));
+  ro.observe($("c-chart-out"));
+  onShow("cesar", update);
   update();
 }
 
@@ -45,16 +55,65 @@ function setDir(d) {
   dir = d;
   document.querySelectorAll("#view-cesar [data-dir]").forEach((b) => b.setAttribute("aria-pressed", Number(b.dataset.dir) === d));
   closeBrute();
+  if (d > 0) setFreq(false);
   update();
 }
 
-function guess() {
+function setFreq(on) {
+  freq = on;
+  $("c-freq-btn").setAttribute("aria-pressed", on);
+  $("c-freq").hidden = !on;
+  $("c-in-panel").hidden = on;
+  update();
+}
+
+// Fréquences (%) des 26 lettres d'un texte, accents retirés, et la lettre la plus fréquente
+function freqs(text) {
   const counts = {};
-  for (const ch of caesar($("c-in").value.toLowerCase(), 0)) if (A.includes(ch)) counts[ch] = (counts[ch] || 0) + 1;
-  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-  if (!top) return;
-  // La lettre la plus fréquente du message chiffré est supposée être un E en clair
-  setShift(A.indexOf(top[0]) - A.indexOf("e"));
+  let n = 0;
+  for (const ch of caesar(text.toLowerCase(), 0)) if (A.includes(ch)) { counts[ch] = (counts[ch] || 0) + 1; n++; }
+  const pct = (c) => (n ? (100 * (counts[c] || 0)) / n : 0);
+  const top = n ? [...A].reduce((a, b) => ((counts[b] || 0) > (counts[a] || 0) ? b : a)) : null;
+  return { pct, top, n };
+}
+
+// Hypothèse : la lettre la plus fréquente du message chiffré est un E en clair
+function guess() {
+  const { top } = freqs($("c-in").value);
+  if (top) setShift(A.indexOf(top) - A.indexOf("e"));
+}
+
+// Deux histogrammes : le message chiffré, puis le message déchiffré avec le décalage courant,
+// comparé au français moyen. Au bon décalage, les barres épousent les repères.
+function drawFreq() {
+  if (!freq) return;
+  const cols = [...A.toUpperCase()];
+  const inp = freqs($("c-in").value);
+  const out = freqs(caesar($("c-in").value, -k));
+  const hotOut = inp.top && caesar(inp.top, -k);
+  const tip = (f, withRef) => (C) => {
+    const c = C.toLowerCase();
+    return `<strong>${C}</strong> : ${fmt(f.pct(c))} % des lettres` + (withRef ? `<br>français moyen : ${fmt(FR[c])} %` : "");
+  };
+  barChart($("c-chart-in"), {
+    cols, pct: true,
+    value: (C) => inp.pct(C.toLowerCase()),
+    mark: (C) => (C.toLowerCase() === inp.top ? "hot" : ""),
+    empty: inp.n ? "" : "Tape un message chiffré pour voir ses lettres.",
+    label: "Fréquence de chaque lettre dans le message chiffré",
+    tip: inp.n ? tip(inp, false) : null,
+  });
+  barChart($("c-chart-out"), {
+    cols, pct: true,
+    value: (C) => out.pct(C.toLowerCase()),
+    ref: (C) => FR[C.toLowerCase()],
+    mark: (C) => (C.toLowerCase() === hotOut ? "hot" : ""),
+    label: `Fréquence de chaque lettre après déchiffrement avec le décalage ${k}, comparée au français moyen`,
+    tip: out.n ? tip(out, true) : null,
+  });
+  $("c-chart-out-title").textContent = `Message déchiffré avec le décalage ${k}`;
+  $("c-guess").hidden = !inp.top;
+  if (inp.top) $("c-guess").textContent = `Et si ${inp.top.toUpperCase()} était un E ?`;
 }
 
 function openBrute() {
@@ -80,14 +139,16 @@ function update() {
   $("c-shift-out").textContent = k;
   $("c-in-label").textContent = dir < 0 ? "Message chiffré" : "Message en clair";
   $("c-out-label").textContent = dir < 0 ? "Message déchiffré" : "Message chiffré";
-  $("c-guess").hidden = $("c-all").hidden = dir > 0;
+  $("c-freq-btn").hidden = $("c-all").hidden = dir > 0;
+  drawFreq();
 
-  // Les deux alphabets : clair en haut, chiffré en bas (décalé de k)
-  const plain = caesar(dir < 0 ? output : input, 0).toLowerCase();
+  // Les deux alphabets : clair en haut, chiffré en bas (décalé de k).
+  // Les lettres utilisées ne sont surlignées que si le résultat est visible (sinon elles le trahiraient).
+  const plain = shown("cesar", "result") ? caesar(dir < 0 ? output : input, 0).toLowerCase() : "";
   const wheel = $("c-wheel");
   const cells = [`<span class="rl">clair</span>`];
   for (const c of A) cells.push(`<span class="c top${plain.includes(c) ? " used" : ""}">${c.toUpperCase()}</span>`);
-  cells.push(`<span></span>`);
+  cells.push(`<span class="rl"></span>`);
   for (let i = 0; i < 26; i++) cells.push(`<span class="arrow">↓</span>`);
   cells.push(`<span class="rl">chiffré</span>`);
   for (const c of A) cells.push(`<span class="c bot${plain.includes(c) ? " used" : ""}">${A[(A.indexOf(c) + k) % 26].toUpperCase()}</span>`);

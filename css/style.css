@@ -83,6 +83,22 @@ h1, h2 { margin: 0; font-weight: 700; }
 }
 .icon-btn:hover { background: var(--paper-2); color: var(--ink); }
 .icon-btn svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn.wide { width: auto; display: flex; gap: 0.4em; padding: 0 0.6em; font-weight: 700; font-size: 0.9em; }
+
+/* Menu « Afficher » */
+.show-menu { position: relative; }
+.show-menu summary { list-style: none; }
+.show-menu summary::-webkit-details-marker { display: none; }
+.show-menu[open] summary { background: var(--paper-2); color: var(--ink); }
+.show-pop {
+  position: absolute; right: 0; top: calc(100% + 0.4rem); z-index: 20;
+  background: var(--paper); border: 1.5px solid var(--rule); border-radius: 10px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); padding: 0.8em 1em; white-space: nowrap;
+}
+.show-pop fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55em; }
+.show-pop legend { padding: 0; margin-bottom: 0.6em; font-weight: 700; color: var(--ink-3); font-size: 0.85em; }
+.show-pop .check { color: var(--ink); }
+
 :fullscreen .bar { opacity: 0.35; transition: opacity 0.2s; }
 :fullscreen .bar:hover, :fullscreen .bar:focus-within { opacity: 1; }
 
@@ -162,6 +178,9 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
   color: var(--ink); border-bottom: 3px solid var(--rc);
   line-height: 1.2;
 }
+.hide-rimes .verse { grid-template-columns: 1.6em 0 minmax(0, 1fr); }
+.hide-rimes .verse .rime { visibility: hidden; }
+.hide-rimes .alts-list b, .hide-rimes .alts-list li.current b { font-weight: inherit; color: inherit; border-bottom-color: transparent; }
 .verse .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .verse .txt.flip { animation: flip 0.25s ease-out; }
 @keyframes flip { from { opacity: 0; transform: translateY(-0.25em); } to { opacity: 1; transform: none; } }
@@ -189,6 +208,16 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .alts-list .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .alts-list b { font-weight: 600; color: var(--ink); border-bottom: 2.5px solid var(--rc); }
 .alts-list li.current b { color: var(--accent); }
+
+/* Livre sans languettes : le poème seul, en grand */
+.hide-alts .sonnets { grid-template-columns: minmax(0, 1fr); }
+.hide-alts .alts, .hide-alts #rand-btn, .hide-alts #read-btn { display: none; }
+.hide-alts .poem { --vs: min(calc((100dvh - var(--bar-h) - 11.5rem) / 20.5), 2.5vw); padding: 0 8%; }
+.hide-alts .verse { cursor: default; }
+.hide-alts .verse:hover { background: none; }
+.hide-nums .code, .hide-nums .alts-list .d { display: none; }
+.hide-nums .alts-list li { grid-template-columns: minmax(0, 1fr); }
+.hide-total .count { visibility: hidden; }
 
 .combo {
   grid-column: 1 / -1;
@@ -231,7 +260,8 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .chart .bar { fill: var(--bar-fill); }
 .chart .val { fill: var(--ink-2); font-size: 13px; text-anchor: middle; font-variant-numeric: tabular-nums; }
 .chart .lbl { fill: var(--ink); font-size: 20px; font-weight: 700; text-anchor: middle; }
-.chart .lbl.absent { fill: var(--accent); }
+.chart .absent .lbl, .chart .hot .lbl { fill: var(--accent); }
+.chart .hot .bar { fill: var(--accent); }
 .chart .strike { stroke: var(--accent); stroke-width: 2.5; }
 .chart .ref { stroke: var(--ref-mark); stroke-width: 3; stroke-linecap: round; }
 .chart .hit { fill: transparent; cursor: default; }
@@ -242,6 +272,13 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .absent-list { font-family: var(--serif); font-size: 2em; letter-spacing: 0.25em; color: var(--accent); line-height: 1; }
 .absent-list.none { font-family: var(--sans); font-size: 1em; letter-spacing: 0; color: var(--ink-3); }
 
+.hide-stats .stats, .hide-chart .chart-row, .hide-chart .result-panel .chart, .hide-absent .absent { display: none; }
+/* Rien à montrer à droite : le texte seul, en grand */
+.hide-stats.hide-chart.hide-absent .lettres { grid-template-columns: minmax(0, 1fr); }
+.hide-stats.hide-chart.hide-absent .result-panel { display: none; }
+.hide-stats.hide-chart.hide-absent .input-panel { width: 100%; max-width: 64rem; margin: 0 auto; }
+.hide-stats.hide-chart.hide-absent textarea { font-size: 1.6em; }
+
 .tip {
   position: fixed; pointer-events: none; z-index: 10;
   background: var(--ink); color: var(--paper); padding: 0.4em 0.7em; border-radius: 6px;
@@ -251,7 +288,7 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 /* ---------- César ---------- */
 .cesar {
   height: 100%; position: relative;
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: calc(var(--gap) * 1.1);
+  display: flex; flex-direction: column; gap: calc(var(--gap) * 1.1);
 }
 .cesar-top { display: flex; align-items: center; gap: 1rem calc(var(--gap) * 1.5); flex-wrap: wrap; }
 .shift { display: flex; align-items: center; gap: 0.6rem; }
@@ -272,7 +309,12 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .wheel .used.top { background: var(--accent-soft); color: var(--accent); }
 .wheel .used.bot { background: var(--accent); color: var(--accent-ink); }
 
-.cesar-io { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--gap) * 1.5); min-height: 0; }
+.cesar-io { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: calc(var(--gap) * 1.5); min-height: 0; }
+.hide-wheel .wheel { display: none; }
+.c-out { transition: filter 0.3s; }
+.hide-result .c-out { filter: blur(0.75em); user-select: none; }
+.freq { gap: 0.4rem; }
+.freq .legend { font-size: 0.85em; }
 .c-out {
   flex: 1; min-height: 0; overflow: auto; display: block;
   padding: 0.8em 1em; border-radius: 10px; background: var(--paper-2);
@@ -320,7 +362,7 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
   .alts-list { font-size: 3.4vw; }
   .chart { min-height: 55vh; }
   textarea { min-height: 30vh; }
-  .cesar { grid-template-rows: auto; }
+  .freq .chart { min-height: 35vh; }
   .wheel .c { font-size: 0.8em; }
   .wheel .rl { display: none; }
   .wheel { grid-template-columns: repeat(26, minmax(0, 1fr)); }

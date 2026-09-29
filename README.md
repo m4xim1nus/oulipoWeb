@@ -5,14 +5,22 @@ Site statique, sans compte ni serveur : <https://oulipo.technoperchoir.fr>
 
 | Onglet | Usage |
 |---|---|
-| `#sonnets` | *Cent mille milliards de poèmes* : structure du sonnet, les 10 variantes de chaque vers, poème au hasard, numéro à 14 chiffres (permalien `#sonnets/31648146429607`), lecture vers par vers. Protégé par mot de passe. |
+| `#sonnets` | *Cent mille milliards de poèmes* : structure du sonnet, les 10 variantes de chaque vers, poème au hasard, numéro à 14 chiffres (permalien `#sonnets/31648146429607`), composition vers par vers (on choisit chaque vers parmi ses variantes). Protégé par mot de passe. |
 | `#lettres` | Compteur de lettres : effectifs, fréquences, comparaison au français moyen, lettres absentes (lipogrammes). Exemples : Du Bellay, « Mystère 1 » (lipogramme en E maison), « Mystère 2 » (incipit de *La Disparition*, mot de passe). |
-| `#cesar` | Chiffre de César : déchiffrer / chiffrer, alphabets alignés, deviner avec la lettre E, force brute (26 décalages). |
+| `#cesar` | Chiffre de César : déchiffrer / chiffrer, alphabets alignés, fréquences des lettres (message chiffré, puis déchiffré comparé au français moyen), force brute (26 décalages). |
+
+## Dévoiler pas à pas : menu « Afficher »
+
+Le bouton **Afficher** (barre du haut) masque ou révèle des éléments de l'onglet courant ; le choix est mémorisé sur l'appareil.
+
+- Sonnets : schéma des rimes, possibilités de chaque vers, numérotation, nombre total de poèmes. Sans les possibilités, l'outil devient un livre de 10 pages qu'on feuillette avec « Sonnet d'origine » (n° 0 à 9) ou `← →`.
+- Lettres : compteurs, graphique, lettres absentes. Tout décoché : le texte seul, en grand.
+- César : alphabets alignés, résultat (flouté quand il est masqué).
 
 ## Raccourcis clavier
 
 - Partout : `F` plein écran.
-- Sonnets : `Espace` au hasard, `↑ ↓` choisir le vers, `← →` changer de variante, `0`–`9` taper le numéro chiffre par chiffre. En mode « Vers par vers » : `Espace` / `→` vers suivant, `←` revenir, `Échap` quitter.
+- Sonnets : `Espace` au hasard, `↑ ↓` choisir le vers, `← →` changer de variante, `0`–`9` taper le numéro chiffre par chiffre. Livre (possibilités masquées) : `Espace` / `→` page suivante, `←` précédente, `0`–`9` aller à la page. En mode « Composer vers par vers » : `0`–`9` ou clic pour choisir, `← →` parcourir, `Espace` garder ce vers, `↑` revenir, `Échap` quitter.
 - César : `← →` changer le décalage, `Échap` fermer la liste des 26 décalages.
 
 ## Textes sous droits (Queneau, Perec)

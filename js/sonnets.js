@@ -1,17 +1,20 @@
 // Cent mille milliards de poèmes : un poème = un numéro à 14 chiffres,
 // le chiffre n°i donne la variante (0–9) du vers n°i.
+// Sans les possibilités (menu Afficher), l'outil devient un livre de n pages qu'on feuillette.
 import { decryptJson, savedPass as store } from "./crypto.js";
+import { shown, onShow } from "./show.js";
 
 const DATA_URL = "data/queneau.enc.json";
 const RHYMES = "ABABABABCCDEED"; // schéma réel du livre
 const STANZAS = [[0, 4], [4, 8], [8, 11], [11, 14]];
 const $ = (id) => document.getElementById(id);
+const book = () => !shown("sonnets", "alts");
 
 let verses = null;        // 14 tableaux de n chaînes
 let n = 10;               // nombre de variantes par vers
 let digits = [];          // variante choisie pour chaque vers
 let active = 0;           // vers sélectionné
-let reading = -1;         // mode vers par vers : nombre de vers révélés (-1 = inactif)
+let reading = -1;         // composition vers par vers : nombre de vers déjà choisis (-1 = inactif)
 let pendingCode = null;   // numéro reçu dans l'URL avant déverrouillage
 
 export function init() {
@@ -32,6 +35,11 @@ export function init() {
   $("orig-select").addEventListener("change", (e) => {
     if (e.target.value === "") return;
     setAll(Number(e.target.value));
+  });
+  onShow("sonnets", () => {
+    if (!verses) return;
+    if (book() && reading >= 0) toggleReading();
+    else render(new Set());
   });
 }
 
@@ -70,7 +78,7 @@ function start(data) {
   $("sonnets").hidden = false;
 
   const sel = $("orig-select");
-  for (let k = 0; k < n; k++) sel.add(new Option(`n° ${k + 1}`, k));
+  for (let k = 0; k < n; k++) sel.add(new Option(`n° ${k}`, k));
 
   const total = BigInt(n) ** BigInt(verses.length);
   $("count").innerHTML =
@@ -99,7 +107,7 @@ function buildPoem() {
       v.innerHTML = `<span class="num">${i + 1}</span><span class="rime" title="Rime ${RHYMES[i]}">${RHYMES[i]}</span><span class="txt"></span>`;
       v.addEventListener("click", () => select(i));
       v.addEventListener("wheel", (e) => {
-        if (reading >= 0) return;
+        if (book() || i !== active || reading >= verses.length) return;
         e.preventDefault();
         select(i);
         step(e.deltaY > 0 ? 1 : -1);
@@ -122,6 +130,7 @@ function buildCode() {
       btn.dataset.i = i;
       btn.title = `Vers ${i + 1} : variante suivante`;
       btn.addEventListener("click", () => {
+        if (book() || reading >= 0) return;
         if (active === i) step(1);
         else select(i);
       });
@@ -141,6 +150,8 @@ function applyDigits(next) {
 
 function setAll(k) { applyDigits(digits.map(() => k)); }
 
+function turnPage(delta) { setAll((digits[0] + delta + n) % n); }
+
 function randomPoem() {
   const r = crypto.getRandomValues(new Uint32Array(verses.length));
   applyDigits([...r].map((x) => x % n));
@@ -153,20 +164,34 @@ function step(delta) {
 }
 
 function select(i) {
-  if (reading >= 0) return;
+  if (book()) return;
+  if (reading >= 0) {
+    if (i > reading) return;
+    reading = i; // on revient choisir ce vers ; les suivants se recachent
+  }
   active = i;
   render(new Set());
 }
 
 function toggleReading() {
   reading = reading >= 0 ? -1 : 0;
+  if (reading === 0) active = 0;
   $("read-btn").setAttribute("aria-pressed", reading >= 0);
   render(new Set());
 }
 
+// Composition : valider le vers en cours (+1) ou revenir au précédent (-1)
 function reveal(delta) {
   reading = Math.max(0, Math.min(verses.length, reading + delta));
+  active = Math.min(reading, verses.length - 1);
   render(new Set());
+}
+
+function choose(d) {
+  const next = [...digits];
+  next[active] = d;
+  applyDigits(next);
+  if (reading >= 0) reveal(1);
 }
 
 /* ---------- Affichage ---------- */
@@ -180,41 +205,50 @@ const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">"
 
 function render(changed) {
   const poem = $("poem");
+  const done = reading >= verses.length;       // composition terminée
+  const selecting = !book() && !done;          // un vers est en cours de choix
   poem.classList.toggle("reading", reading >= 0);
   poem.querySelectorAll(".verse").forEach((v) => {
     const i = Number(v.dataset.i);
     const txt = v.querySelector(".txt");
     txt.textContent = verses[i][digits[i]];
     if (changed.has(i)) { txt.classList.remove("flip"); void txt.offsetWidth; txt.classList.add("flip"); }
-    v.classList.toggle("active", reading < 0 && i === active);
-    v.classList.toggle("hidden-verse", reading >= 0 && i >= reading);
+    v.classList.toggle("active", selecting && i === active);
+    v.classList.toggle("hidden-verse", reading >= 0 && i > reading);
   });
 
   $("code").querySelectorAll("button").forEach((b) => {
     const i = Number(b.dataset.i);
-    b.textContent = digits[i];
-    b.classList.toggle("active", reading < 0 && i === active);
+    b.textContent = reading >= 0 && i > reading ? "·" : digits[i];
+    b.classList.toggle("active", selecting && i === active);
   });
 
   // Panneau des alternatives du vers actif
+  $("rand-btn").hidden = reading >= 0;
   const list = $("alts-list");
-  list.hidden = reading >= 0;
-  $("progress").hidden = reading < 0;
-  if (reading >= 0) {
-    $("alts-title").textContent = "Lecture vers par vers";
-    $("alts-hint").textContent = "Espace ou → : vers suivant · ← : revenir";
+  list.hidden = done;
+  $("progress").hidden = !done;
+  if (done) {
+    $("alts-title").textContent = "Poème composé !";
+    $("alts-hint").textContent = "↑ : revenir sur le dernier vers · Échap : terminer";
     list.replaceChildren();
-    $("progress").innerHTML = `${reading}<span> / ${verses.length}</span>`;
+    $("progress").innerHTML = `${verses.length}<span> / ${verses.length}</span>`;
   } else {
-    $("alts-title").textContent = `Vers ${active + 1} : les ${n} possibilités`;
-    $("alts-hint").textContent = "Même rime, même place : chaque vers s'emboîte avec tous les autres. ← → pour changer, ↑ ↓ pour choisir un autre vers.";
+    const rimes = shown("sonnets", "rimes");
+    if (reading >= 0) {
+      $("alts-title").textContent = `Vers ${active + 1} / ${verses.length} : choisis parmi les ${n}`;
+      $("alts-hint").textContent = "Clic ou chiffre : choisir · ← → : parcourir · Espace : garder celui-ci · ↑ : revenir";
+    } else {
+      $("alts-title").textContent = `Vers ${active + 1} : les ${n} possibilités`;
+      $("alts-hint").textContent = `${rimes ? "Même rime, même place" : "Même place"} : chaque vers s'emboîte avec tous les autres. ← → pour changer, ↑ ↓ pour choisir un autre vers.`;
+    }
     list.style.setProperty("--rc", `var(--r${RHYMES.charCodeAt(active) - 64})`);
     list.replaceChildren(...verses[active].map((s, d) => {
       const li = document.createElement("li");
       const [head, tail] = lastWord(s);
       li.innerHTML = `<span class="d">${d}</span><span class="t">${esc(head)}<b>${esc(tail)}</b></span>`;
       li.classList.toggle("current", d === digits[active]);
-      li.addEventListener("click", () => { const next = [...digits]; next[active] = d; applyDigits(next); });
+      li.addEventListener("click", () => choose(d));
       return li;
     }));
   }
@@ -228,20 +262,32 @@ function render(changed) {
 
 export function onKey(e) {
   if (!verses) return;
-  if (reading >= 0) {
-    if (e.key === " " || e.key === "ArrowRight" || e.key === "ArrowDown") reveal(1);
-    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") reveal(-1);
-    else if (e.key === "Escape") toggleReading();
+  const digit = /^\d$/.test(e.key) && Number(e.key) < n ? Number(e.key) : null;
+  if (book()) {
+    // Livre sans languettes : on tourne des pages entières
+    if (e.key === " " || e.key === "ArrowRight" || e.key === "ArrowDown") turnPage(1);
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") turnPage(-1);
+    else if (digit !== null) setAll(digit);
+    else return;
+  } else if (reading >= 0) {
+    const done = reading >= verses.length;
+    if (e.key === "Escape") toggleReading();
+    else if (e.key === "ArrowUp" || e.key === "Backspace") reveal(-1);
+    else if (done) return;
+    else if (e.key === " " || e.key === "Enter" || e.key === "ArrowDown") reveal(1);
+    else if (e.key === "ArrowLeft") step(-1);
+    else if (e.key === "ArrowRight") step(1);
+    else if (digit !== null) choose(digit);
     else return;
   } else if (e.key === " ") randomPoem();
   else if (e.key === "ArrowUp") select((active + verses.length - 1) % verses.length);
   else if (e.key === "ArrowDown") select((active + 1) % verses.length);
   else if (e.key === "ArrowLeft") step(-1);
   else if (e.key === "ArrowRight") step(1);
-  else if (/^\d$/.test(e.key) && Number(e.key) < n) {
+  else if (digit !== null) {
     // Taper un numéro chiffre par chiffre : on remplit puis on passe au vers suivant
     const next = [...digits];
-    next[active] = Number(e.key);
+    next[active] = digit;
     applyDigits(next);
     select((active + 1) % verses.length);
   } else return;

@@ -2,6 +2,7 @@
 import * as sonnets from "./sonnets.js";
 import * as lettres from "./lettres.js";
 import * as cesar from "./cesar.js";
+import { setView } from "./show.js";
 
 const tools = { sonnets, lettres, cesar };
 let current = null;
@@ -12,6 +13,7 @@ function route() {
   document.querySelectorAll(".view").forEach((v) => (v.hidden = v.dataset.view !== view));
   document.querySelectorAll(".tabs a").forEach((a) =>
     a.dataset.tab === view ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  setView(view);
   if (current !== view) tools[view].show?.();
   tools[view].onRoute?.(rest.join("/"));
   current = view;
