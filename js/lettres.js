@@ -49,7 +49,6 @@ Elle s'impose à partir de 2018 avec l'album Nakamura et le single Djadja, certi
 Le 26 juillet 2024, elle chante à la cérémonie d'ouverture des Jeux olympiques d'été de Paris, réalisant le meilleur pic d'audience de l'histoire de la télévision française avec 31,4 millions de téléspectateurs. En mai 2026, elle devient la première artiste féminine francophone à se produire trois soirs consécutifs au Stade de France.
 
 Wikipédia, article « Aya Nakamura » (CC BY-SA)`,
-  lipo: `Un soir, au fond d'un grand parc, un garçon distrait fouillait partout : où a fui son chat ? Sous un banc, dans un buisson, au bord du lac, jusqu'au pont. Nul bruit, pas un poil. Il allait partir, à bout, quand soudain, un miaou ! Son chat, blotti sous un pin, dormait sans aucun souci du froid. Il l'a pris dans son blouson, ravi, puis tous trois, garçon, chat, blouson, sont partis au chaud.`,
 };
 
 let mode = "count";
