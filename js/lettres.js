@@ -35,20 +35,6 @@ Plus mon petit Liré que le mont Palatin,
 Et plus que l'air marin la douceur angevine.
 
 Joachim du Bellay, Les Regrets (1558)`,
-  // Extrait de l'article « Minecraft », Wikipédia en français, licence CC BY-SA 4.0 (consulté en septembre 2026)
-  wiki: `Minecraft est un jeu vidéo de type aventure « bac à sable » développé par le Suédois Markus Persson, alias Notch, puis par la société Mojang Studios. Il s'agit d'un univers composé de voxels et généré de façon procédurale, qui intègre un système d'artisanat axé sur la collecte puis la transformation de ressources naturelles (minéralogiques, fossiles, animales et végétales).
-
-À l'origine conçu comme un jeu sur navigateur, Minecraft est finalement développé pour ordinateurs (Windows, Mac et Linux) à l'aide de la technique Java, puis pour téléphone mobile dans sa version Minecraft Bedrock Edition (Android, iOS et Windows Phone, version qui sera plus tard étendue à d'autres plate-formes).
-
-Wikipédia, article « Minecraft » (CC BY-SA)`,
-  // Extraits de l'article « Aya Nakamura », Wikipédia en français, licence CC BY-SA 4.0 (consulté en septembre 2026)
-  aya: `Aya Danioko, dite Aya Nakamura, est une chanteuse et rappeuse malienne naturalisée française, née le 10 mai 1995 à Bamako (Mali). Sa famille arrive en France quelques mois après sa naissance et emménage à Aulnay-sous-Bois alors qu'elle est encore enfant.
-
-Elle s'impose à partir de 2018 avec l'album Nakamura et le single Djadja, certifié disque de diamant, qui la propulse au rang d'artiste francophone la plus écoutée dans le monde. L'album Aya utilise toujours une langue française « élastique et inventive », enrichie d'argot et d'expressions personnelles.
-
-Le 26 juillet 2024, elle chante à la cérémonie d'ouverture des Jeux olympiques d'été de Paris, réalisant le meilleur pic d'audience de l'histoire de la télévision française avec 31,4 millions de téléspectateurs. En mai 2026, elle devient la première artiste féminine francophone à se produire trois soirs consécutifs au Stade de France.
-
-Wikipédia, article « Aya Nakamura » (CC BY-SA)`,
 };
 
 let mode = "count";
@@ -60,6 +46,12 @@ export function init() {
   $("l-clear").addEventListener("click", () => { $("l-text").value = ""; update(); $("l-text").focus(); });
   document.querySelectorAll("[data-sample]").forEach((b) =>
     b.addEventListener("click", () => { $("l-text").value = SAMPLES[b.dataset.sample]; update(); }));
+  // Articles Wikipédia complets (CC BY-SA), trop longs pour figurer ici : chargés à la demande
+  document.querySelectorAll("[data-url]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      const res = await fetch(b.dataset.url);
+      if (res.ok) { $("l-text").value = await res.text(); update(); $("l-text").scrollTop = 0; }
+    }));
   // Incipit de La Disparition : sous droits, publié chiffré
   $("l-perec").addEventListener("click", async () => {
     const data = await decryptWithPrompt("data/disparition.enc.json");

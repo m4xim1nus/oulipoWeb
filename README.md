@@ -6,7 +6,7 @@ Site statique, sans compte ni serveur : <https://oulipo.technoperchoir.fr>
 | Onglet | Usage |
 |---|---|
 | `#sonnets` | *Cent mille milliards de poèmes* : structure du sonnet, les 10 variantes de chaque vers, poème au hasard, numéro à 14 chiffres (permalien `#sonnets/31648146429607`), composition vers par vers (on choisit chaque vers parmi ses variantes). Protégé par mot de passe. |
-| `#lettres` | Compteur de lettres : effectifs, fréquences, comparaison au français moyen, lettres absentes (lipogrammes). Exemples : Du Bellay, articles Wikipédia « Minecraft » et « Aya Nakamura » (extraits, CC BY-SA), incipit de *La Disparition* (mot de passe). |
+| `#lettres` | Compteur de lettres : effectifs, fréquences, comparaison au français moyen, lettres absentes (lipogrammes). Exemples : Du Bellay, articles Wikipédia complets « Minecraft » et « Aya Nakamura » (`data/wiki-*.txt`, CC BY-SA, hors notes et annexes), incipit de *La Disparition* (mot de passe). |
 | `#cesar` | Chiffre de César : déchiffrer / chiffrer, alphabets alignés, fréquences des lettres (message chiffré, puis déchiffré comparé au français moyen), force brute (26 décalages). |
 
 ## Dévoiler pas à pas : les « yeux » de la barre du haut
