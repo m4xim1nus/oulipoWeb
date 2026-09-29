@@ -41,19 +41,14 @@ Joachim du Bellay, Les Regrets (1558)`,
 À l'origine conçu comme un jeu sur navigateur, Minecraft est finalement développé pour ordinateurs (Windows, Mac et Linux) à l'aide de la technique Java, puis pour téléphone mobile dans sa version Minecraft Bedrock Edition (Android, iOS et Windows Phone, version qui sera plus tard étendue à d'autres plate-formes).
 
 Wikipédia, article « Minecraft » (CC BY-SA)`,
-  // Discussion inventée, en écriture « SMS » : abréviations et mots tronqués bousculent les fréquences
-  chat: `Léa : wsh vous avez fait l'exo de maths ??
-Nassim : nn jsp comment on fait mdr
-Léa : pk personne répond 😭
-Inès : tkt c facile c juste des pourcentages
-Nassim : ptdr t sûre ?? moi g rien compris
-Tom : slt jsuis dans le bus, qqn a le pdf du cours ?
-Léa : jte l'envoie dans 2 min
-Inès : bon bsx à dm, oubliez pas le contrôle d'histoire
-Nassim : QUOI y a un contrôle ???
-Tom : mdrrr t'es mort 💀
-Nassim : jvais rager frr, vs pouvez m'aider ce soir stp
-Inès : ok on se fait un appel à 20h`,
+  // Extraits de l'article « Aya Nakamura », Wikipédia en français, licence CC BY-SA 4.0 (consulté en septembre 2026)
+  aya: `Aya Danioko, dite Aya Nakamura, est une chanteuse et rappeuse malienne naturalisée française, née le 10 mai 1995 à Bamako (Mali). Sa famille arrive en France quelques mois après sa naissance et emménage à Aulnay-sous-Bois alors qu'elle est encore enfant.
+
+Elle s'impose à partir de 2018 avec l'album Nakamura et le single Djadja, certifié disque de diamant, qui la propulse au rang d'artiste francophone la plus écoutée dans le monde. L'album Aya utilise toujours une langue française « élastique et inventive », enrichie d'argot et d'expressions personnelles.
+
+Le 26 juillet 2024, elle chante à la cérémonie d'ouverture des Jeux olympiques d'été de Paris, réalisant le meilleur pic d'audience de l'histoire de la télévision française avec 31,4 millions de téléspectateurs. En mai 2026, elle devient la première artiste féminine francophone à se produire trois soirs consécutifs au Stade de France.
+
+Wikipédia, article « Aya Nakamura » (CC BY-SA)`,
   lipo: `Un soir, au fond d'un grand parc, un garçon distrait fouillait partout : où a fui son chat ? Sous un banc, dans un buisson, au bord du lac, jusqu'au pont. Nul bruit, pas un poil. Il allait partir, à bout, quand soudain, un miaou ! Son chat, blotti sous un pin, dormait sans aucun souci du froid. Il l'a pris dans son blouson, ravi, puis tous trois, garçon, chat, blouson, sont partis au chaud.`,
 };
 
