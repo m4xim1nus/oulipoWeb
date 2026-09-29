@@ -35,6 +35,25 @@ Plus mon petit Liré que le mont Palatin,
 Et plus que l'air marin la douceur angevine.
 
 Joachim du Bellay, Les Regrets (1558)`,
+  // Extrait de l'article « Minecraft », Wikipédia en français, licence CC BY-SA 4.0 (consulté en septembre 2026)
+  wiki: `Minecraft est un jeu vidéo de type aventure « bac à sable » développé par le Suédois Markus Persson, alias Notch, puis par la société Mojang Studios. Il s'agit d'un univers composé de voxels et généré de façon procédurale, qui intègre un système d'artisanat axé sur la collecte puis la transformation de ressources naturelles (minéralogiques, fossiles, animales et végétales).
+
+À l'origine conçu comme un jeu sur navigateur, Minecraft est finalement développé pour ordinateurs (Windows, Mac et Linux) à l'aide de la technique Java, puis pour téléphone mobile dans sa version Minecraft Bedrock Edition (Android, iOS et Windows Phone, version qui sera plus tard étendue à d'autres plate-formes).
+
+Wikipédia, article « Minecraft » (CC BY-SA)`,
+  // Discussion inventée, en écriture « SMS » : abréviations et mots tronqués bousculent les fréquences
+  chat: `Léa : wsh vous avez fait l'exo de maths ??
+Nassim : nn jsp comment on fait mdr
+Léa : pk personne répond 😭
+Inès : tkt c facile c juste des pourcentages
+Nassim : ptdr t sûre ?? moi g rien compris
+Tom : slt jsuis dans le bus, qqn a le pdf du cours ?
+Léa : jte l'envoie dans 2 min
+Inès : bon bsx à dm, oubliez pas le contrôle d'histoire
+Nassim : QUOI y a un contrôle ???
+Tom : mdrrr t'es mort 💀
+Nassim : jvais rager frr, vs pouvez m'aider ce soir stp
+Inès : ok on se fait un appel à 20h`,
   lipo: `Un soir, au fond d'un grand parc, un garçon distrait fouillait partout : où a fui son chat ? Sous un banc, dans un buisson, au bord du lac, jusqu'au pont. Nul bruit, pas un poil. Il allait partir, à bout, quand soudain, un miaou ! Son chat, blotti sous un pin, dormait sans aucun souci du froid. Il l'a pris dans son blouson, ravi, puis tous trois, garçon, chat, blouson, sont partis au chaud.`,
 };
 

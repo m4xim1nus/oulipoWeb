@@ -83,21 +83,18 @@ h1, h2 { margin: 0; font-weight: 700; }
 }
 .icon-btn:hover { background: var(--paper-2); color: var(--ink); }
 .icon-btn svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.icon-btn.wide { width: auto; display: flex; gap: 0.4em; padding: 0 0.6em; font-weight: 700; font-size: 0.9em; }
-
-/* Menu « Afficher » */
-.show-menu { position: relative; }
-.show-menu summary { list-style: none; }
-.show-menu summary::-webkit-details-marker { display: none; }
-.show-menu[open] summary { background: var(--paper-2); color: var(--ink); }
-.show-pop {
-  position: absolute; right: 0; top: calc(100% + 0.4rem); z-index: 20;
-  background: var(--paper); border: 1.5px solid var(--rule); border-radius: 10px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); padding: 0.8em 1em; white-space: nowrap;
+/* Bascules « œil » : afficher / masquer en un clic */
+.show-toggles { display: flex; align-items: center; margin-right: 0.5rem; }
+.show-toggles > span { display: flex; gap: 0.15rem; }
+.tg {
+  display: flex; align-items: center; gap: 0.35em; height: 2.2rem; padding: 0 0.6em;
+  border: 0; background: none; border-radius: 6px; cursor: pointer;
+  font-size: 0.85em; font-weight: 700; color: var(--ink);
 }
-.show-pop fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55em; }
-.show-pop legend { padding: 0; margin-bottom: 0.6em; font-weight: 700; color: var(--ink-3); font-size: 0.85em; }
-.show-pop .check { color: var(--ink); }
+.tg:hover { background: var(--paper-2); }
+.tg svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tg[aria-pressed="false"] { color: var(--ink-3); }
+.tg[aria-pressed="false"] .eye-on, .tg[aria-pressed="true"] .eye-off { display: none; }
 
 :fullscreen .bar { opacity: 0.35; transition: opacity 0.2s; }
 :fullscreen .bar:hover, :fullscreen .bar:focus-within { opacity: 1; }
@@ -352,6 +349,7 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
   .view { padding: 16px; }
   .sonnets, .lettres, .cesar-io { grid-template-columns: minmax(0, 1fr); }
   .tabs { order: 3; width: 100%; }
+  .bar-actions { flex-wrap: wrap; justify-content: flex-end; }
   .verse .txt, .alts-list .t { white-space: normal; }
   .code { flex-wrap: wrap; gap: 0.4em; }
   .code button { font-size: 1.1em; }

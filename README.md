@@ -6,12 +6,12 @@ Site statique, sans compte ni serveur : <https://oulipo.technoperchoir.fr>
 | Onglet | Usage |
 |---|---|
 | `#sonnets` | *Cent mille milliards de poèmes* : structure du sonnet, les 10 variantes de chaque vers, poème au hasard, numéro à 14 chiffres (permalien `#sonnets/31648146429607`), composition vers par vers (on choisit chaque vers parmi ses variantes). Protégé par mot de passe. |
-| `#lettres` | Compteur de lettres : effectifs, fréquences, comparaison au français moyen, lettres absentes (lipogrammes). Exemples : Du Bellay, « Mystère 1 » (lipogramme en E maison), « Mystère 2 » (incipit de *La Disparition*, mot de passe). |
+| `#lettres` | Compteur de lettres : effectifs, fréquences, comparaison au français moyen, lettres absentes (lipogrammes). Exemples : Du Bellay, article Wikipédia « Minecraft » (CC BY-SA), discussion de groupe en écriture SMS (inventée), « Mystère » (lipogramme en E maison), incipit de *La Disparition* (mot de passe). |
 | `#cesar` | Chiffre de César : déchiffrer / chiffrer, alphabets alignés, fréquences des lettres (message chiffré, puis déchiffré comparé au français moyen), force brute (26 décalages). |
 
-## Dévoiler pas à pas : menu « Afficher »
+## Dévoiler pas à pas : les « yeux » de la barre du haut
 
-Le bouton **Afficher** (barre du haut) masque ou révèle des éléments de l'onglet courant ; le choix est mémorisé sur l'appareil.
+À droite de la barre, un bouton œil par élément de l'onglet courant : un clic le masque ou le révèle. Le choix est mémorisé sur l'appareil.
 
 - Sonnets : schéma des rimes, possibilités de chaque vers, numérotation, nombre total de poèmes. Sans les possibilités, l'outil devient un livre de 10 pages qu'on feuillette avec « Sonnet d'origine » (n° 0 à 9) ou `← →`.
 - Lettres : compteurs, graphique, lettres absentes. Tout décoché : le texte seul, en grand.
@@ -25,7 +25,7 @@ Le bouton **Afficher** (barre du haut) masque ou révèle des éléments de l'on
 
 ## Textes sous droits (Queneau, Perec)
 
-Ils sont publiés **chiffrés** (`data/*.enc.json`, AES-GCM, clé dérivée du mot de passe par PBKDF2) ; les versions en clair `data/*.json` ne sont pas versionnées. Le mot de passe, saisi une fois (onglet Sonnets ou bouton « Mystère 2 » de Lettres), est mémorisé sur l'appareil.
+Ils sont publiés **chiffrés** (`data/*.enc.json`, AES-GCM, clé dérivée du mot de passe par PBKDF2) ; les versions en clair `data/*.json` ne sont pas versionnées. Le mot de passe, saisi une fois (onglet Sonnets ou bouton « La Disparition » de Lettres), est mémorisé sur l'appareil.
 
 - `data/queneau.json` : les 140 vers, `{ "titre", "vers": [[10 variantes] × 14] }`.
 - `data/disparition.json` : incipit du chapitre 1 de *La Disparition*, `{ "titre", "texte" }` (copié depuis le PDF de séance).
