@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Oulipo en classe</title>
-<meta name="description" content="Outils projetables pour la séquence Oulipo : Cent mille milliards de poèmes, compteur de lettres, chiffre de César.">
+<meta name="description" content="Outils projetables pour la séquence Oulipo : Cent mille milliards de poèmes, poèmes combinatoires de la classe, compteur de lettres, chiffre de César.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316213e'/><text x='16' y='23' font-family='Georgia' font-size='20' fill='%23fff' text-anchor='middle'>O</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
   <a class="brand" href="#sonnets">Oulipo</a>
   <nav class="tabs" aria-label="Outils">
     <a href="#sonnets" data-tab="sonnets">Cent mille milliards</a>
+    <a href="#classe" data-tab="classe">Classe</a>
     <a href="#lettres" data-tab="lettres">Lettres</a>
     <a href="#cesar" data-tab="cesar">César</a>
   </nav>
@@ -28,6 +29,12 @@
       <span data-for="sonnets">
         <button type="button" class="tg" data-show="rimes" aria-pressed="true" title="Schéma des rimes">Rimes</button>
         <button type="button" class="tg" data-show="alts" aria-pressed="true" title="Les possibilités de chaque vers (sinon : livre de 10 pages)">Possibilités</button>
+        <button type="button" class="tg" data-show="nums" aria-pressed="true" title="Numérotation des variantes et des poèmes">Numéros</button>
+        <button type="button" class="tg" data-show="total" aria-pressed="true" title="Nombre total de poèmes">Total</button>
+      </span>
+      <span data-for="classe">
+        <button type="button" class="tg" data-show="rimes" aria-pressed="true" title="Schéma des rimes">Rimes</button>
+        <button type="button" class="tg" data-show="alts" aria-pressed="true" title="Les possibilités de chaque vers (sinon : livre qu'on feuillette)">Possibilités</button>
         <button type="button" class="tg" data-show="nums" aria-pressed="true" title="Numérotation des variantes et des poèmes">Numéros</button>
         <button type="button" class="tg" data-show="total" aria-pressed="true" title="Nombre total de poèmes">Total</button>
       </span>
@@ -63,29 +70,38 @@
       <p class="lock-error" id="lock-error" role="alert"></p>
     </form>
 
-    <div class="sonnets" id="sonnets" hidden>
-      <div class="poem" id="poem" aria-label="Sonnet"></div>
-      <aside class="alts" aria-live="polite">
-        <h2 id="alts-title">Vers 1</h2>
-        <p class="alts-hint" id="alts-hint"></p>
-        <ol class="alts-list" id="alts-list"></ol>
-        <p class="progress" id="progress" hidden></p>
+    <div id="sonnets" hidden></div>
+  </section>
+
+  <!-- ============ Poèmes de la classe ============ -->
+  <section class="view" id="view-classe" data-view="classe" hidden>
+    <div class="classe-edit" id="k-edit">
+      <nav class="k-groups" id="k-groups" aria-label="Poèmes des groupes"></nav>
+      <div class="k-form">
+        <label class="k-name">
+          <span class="panel-title">Groupe <b id="k-num">0</b></span>
+          <input id="k-name" type="text" placeholder="Nom du groupe ou titre du poème (facultatif)" autocomplete="off">
+        </label>
+        <div class="k-lines" id="k-lines"></div>
+        <p class="alts-hint">Entrée ou ↓ : vers suivant · ↑ : vers précédent · Coller un poème entier remplit les 14 vers (une ligne par vers).</p>
+      </div>
+      <aside class="k-side alts">
+        <h2 id="k-side-title">Vers 1 dans les 10 poèmes</h2>
+        <p class="alts-hint">Même rime, même place : chaque vers doit pouvoir s'emboîter avec tous les autres. Clic : ouvrir ce groupe.</p>
+        <ol class="k-others" id="k-others"></ol>
       </aside>
-      <footer class="combo">
-        <div class="code" id="code" aria-label="Numéro du poème"></div>
-        <div class="combo-actions">
-          <button type="button" class="btn primary" id="rand-btn" title="Raccourci : Espace">Au hasard</button>
-          <label class="select">
-            <span>Sonnet d'origine</span>
-            <select id="orig-select">
-              <option value="">—</option>
-            </select>
-          </label>
-          <button type="button" class="btn" id="read-btn" aria-pressed="false" title="Choisir chaque vers parmi ses variantes, l'un après l'autre">Composer vers par vers</button>
-        </div>
-        <p class="count" id="count"></p>
+      <footer class="k-foot">
+        <p class="k-status" id="k-status"></p>
+        <p class="k-flash" id="k-flash" role="status" hidden></p>
+        <span class="spacer"></span>
+        <button type="button" class="btn small" id="k-export" title="Télécharger les poèmes dans un fichier .json (sauvegarde, autre ordinateur)">Exporter</button>
+        <button type="button" class="btn small" id="k-import" title="Charger un fichier .json exporté">Importer</button>
+        <input type="file" id="k-file" accept=".json,application/json" hidden>
+        <button type="button" class="btn small" id="k-clear">Tout effacer</button>
+        <button type="button" class="btn primary" id="k-read">Lire les poèmes</button>
       </footer>
     </div>
+    <div id="k-reader" hidden></div>
   </section>
 
   <!-- ============ Lettres ============ -->
@@ -194,6 +210,31 @@
 </main>
 
 <div class="tip" id="tip" hidden></div>
+
+<!-- Lecteur « à la Queneau », monté par js/reader.js dans #sonnets et #k-reader -->
+<template id="tpl-reader">
+  <div class="sonnets">
+    <div class="poem" data-el="poem" aria-label="Sonnet"></div>
+    <aside class="alts" aria-live="polite">
+      <h2 data-el="alts-title">Vers 1</h2>
+      <p class="alts-hint" data-el="alts-hint"></p>
+      <ol class="alts-list" data-el="alts-list"></ol>
+      <p class="progress" data-el="progress" hidden></p>
+    </aside>
+    <footer class="combo">
+      <div class="code" data-el="code" aria-label="Numéro du poème"></div>
+      <div class="combo-actions" data-el="combo-actions">
+        <button type="button" class="btn primary rand-btn" data-el="rand-btn" title="Raccourci : Espace">Au hasard</button>
+        <label class="select">
+          <span data-el="origin-label">Sonnet d'origine</span>
+          <select data-el="orig-select"></select>
+        </label>
+        <button type="button" class="btn read-btn" data-el="read-btn" aria-pressed="false" title="Choisir chaque vers parmi ses variantes, l'un après l'autre">Composer vers par vers</button>
+      </div>
+      <p class="count" data-el="count"></p>
+    </footer>
+  </div>
+</template>
 
 <script type="module" src="js/app.js"></script>
 </body>

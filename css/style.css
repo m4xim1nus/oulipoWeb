@@ -145,6 +145,7 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .lock-error { color: var(--accent); font-weight: 700; min-height: 1.4em; }
 
 /* ---------- Sonnets ---------- */
+#sonnets, #k-reader { height: 100%; }
 .sonnets {
   height: 100%;
   display: grid;
@@ -208,7 +209,7 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 
 /* Livre sans languettes : le poème seul, en grand */
 .hide-alts .sonnets { grid-template-columns: minmax(0, 1fr); }
-.hide-alts .alts, .hide-alts #rand-btn, .hide-alts #read-btn { display: none; }
+.hide-alts .alts, .hide-alts .rand-btn, .hide-alts .read-btn { display: none; }
 .hide-alts .poem { --vs: min(calc((100dvh - var(--bar-h) - 11.5rem) / 20.5), 2.5vw); padding: 0 8%; }
 .hide-alts .verse { cursor: default; }
 .hide-alts .verse:hover { background: none; }
@@ -234,6 +235,75 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
 .select select { padding: 0.4em 0.6em; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); font-weight: 700; }
 .count { margin: 0 0 0 auto; color: var(--ink-2); text-align: right; }
 .count strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- Poèmes de la classe : éditeur ---------- */
+.classe-edit {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: calc(var(--gap) * 0.8) calc(var(--gap) * 1.5);
+}
+.k-groups { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 0.35rem; }
+.k-tab {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 0.45em;
+  align-items: center; text-align: left;
+  padding: 0.3em 0.55em; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); cursor: pointer;
+}
+.k-tab:hover { border-color: var(--ink-3); }
+.k-tab .k-d { grid-row: 1 / 3; font-size: 1.6em; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.k-tab .k-n { font-size: 0.75em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-tab .k-p { font-size: 0.75em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.k-tab.complete .k-p { color: var(--r3); font-weight: 700; }
+.k-tab[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.k-tab[aria-pressed="true"] .k-d { color: var(--accent); }
+
+.k-form { display: flex; flex-direction: column; gap: 0.5rem; min-height: 0; }
+.k-name { display: flex; align-items: center; gap: 0.8rem; }
+.k-name b { color: var(--accent); font-size: 1.3em; }
+.k-name input, .k-line input {
+  flex: 1; min-width: 0; padding: 0.25em 0.6em;
+  border: 1.5px solid var(--rule); border-radius: 6px; background: var(--paper);
+}
+.k-name input:focus, .k-line input:focus { border-color: var(--ink-3); outline: none; }
+.k-lines {
+  --ks: min(calc((100dvh - var(--bar-h) - 16rem) / 30), 1.45vw);
+  flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; justify-content: safe center; gap: 0.6em;
+  font-size: var(--ks);
+}
+.k-stanza { display: flex; flex-direction: column; gap: 0.15em; }
+.k-line { display: grid; grid-template-columns: 1.6em 1.3em minmax(0, 1fr); align-items: center; gap: 0.4em; }
+.k-line input { font-family: var(--serif); padding: 0.05em 0.5em; }
+.k-line input:focus { background: var(--accent-soft); border-color: var(--accent); }
+.k-line .num { font-size: 0.6em; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+.k-line .rime { font-weight: 700; font-size: 0.65em; text-align: center; border-bottom: 3px solid var(--rc); line-height: 1.2; }
+.k-form .alts-hint { margin: 0; }
+
+.k-others {
+  list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0;
+  display: flex; flex-direction: column; justify-content: space-evenly;
+  font-family: var(--serif); font-size: min(calc((100dvh - var(--bar-h) - 18rem) / 15), 1.2vw);
+}
+.k-others li {
+  display: grid; grid-template-columns: 1.4em minmax(0, 1fr); gap: 0.4em; align-items: baseline;
+  padding: 0.12em 0.4em; border-radius: 4px; cursor: pointer; color: var(--ink-2);
+}
+.k-others li:hover { background: var(--paper-2); color: var(--ink); }
+.k-others li.current { color: var(--ink); background: var(--accent-soft); }
+.k-others li.blank .t { color: var(--ink-3); }
+.k-others .d { font-family: var(--sans); font-size: 0.75em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.k-others .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-others b { font-weight: 600; color: var(--ink); border-bottom: 2.5px solid var(--rc); }
+
+.k-foot {
+  grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 0.8rem;
+  border-top: 1px solid var(--rule); padding-top: calc(var(--gap) * 0.8);
+}
+.k-status { margin: 0; color: var(--ink-2); }
+.k-status strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.k-muted { color: var(--ink-3); font-size: 0.9em; }
+.k-flash { margin: 0; padding: 0.2em 0.7em; border-radius: 6px; background: var(--accent-soft); color: var(--ink); font-size: 0.9em; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
 
 /* ---------- Lettres ---------- */
 .lettres {
@@ -347,7 +417,11 @@ textarea:focus { border-color: var(--ink-3); outline: none; }
   .bar { flex-wrap: wrap; height: auto; padding: 0.4rem 16px; }
   .tabs a { padding: 0.5em 0.6em; }
   .view { padding: 16px; }
-  .sonnets, .lettres, .cesar-io { grid-template-columns: minmax(0, 1fr); }
+  .sonnets, .lettres, .cesar-io, .classe-edit { grid-template-columns: minmax(0, 1fr); }
+  .k-groups { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .k-lines { --ks: 1em; }
+  .k-others { font-size: 3.4vw; }
+  .k-side { border-left: 0; padding-left: 0; }
   .tabs { order: 3; width: 100%; }
   .bar-actions { flex-wrap: wrap; justify-content: flex-end; }
   .verse .txt, .alts-list .t { white-space: normal; }

@@ -1,10 +1,11 @@
-// Routeur par hash (#sonnets, #lettres, #cesar), thème, plein écran, raccourcis.
+// Routeur par hash (#sonnets, #classe, #lettres, #cesar), thème, plein écran, raccourcis.
 import * as sonnets from "./sonnets.js";
+import * as classe from "./classe.js";
 import * as lettres from "./lettres.js";
 import * as cesar from "./cesar.js";
 import { setView } from "./show.js";
 
-const tools = { sonnets, lettres, cesar };
+const tools = { sonnets, classe, lettres, cesar };
 let current = null;
 
 function route() {
